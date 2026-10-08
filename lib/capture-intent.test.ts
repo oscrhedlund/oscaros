@@ -1,0 +1,21 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {interpretCapture} from './capture-intent';
+const now=new Date(2026,9,7,10); // Wednesday, local calendar time.
+const parse=(s:string)=>interpretCapture(s,['Hälsa','Projekt'],now);
+test('Swedish appointment with relative date and time',()=>{const x=parse('Fika med Emma imorgon kl 15');assert.equal(x.kind,'event');assert.equal(x.due,'2026-10-08');assert.equal(x.time,'15:00');assert.match(x.body,/Fika med Emma/)});
+test('Action takes precedence over appointment vocabulary',()=>{const x=parse('Boka tandläkare på fredag');assert.equal(x.kind,'task');assert.equal(x.due,'2026-10-09')});
+test('Task without a date does not invent a deadline',()=>{const x=parse('Betala elräkningen');assert.equal(x.kind,'task');assert.equal(x.due,'')});
+test('Infinitives and conversational actions',()=>{assert.equal(parse('Köpa mjölk imorgon').kind,'task');assert.equal(parse('Jag måste betala hyran').kind,'task');assert.equal(parse('Jag ska träffa Emma på fredag kl 14').kind,'event')});
+test('Explicit type overrides inference',()=>{assert.equal(parse('Anteckning: Möte fredag kl 15 gick bra').kind,'note');assert.equal(parse('Anteckning: Möte fredag kl 15 gick bra').due,'');assert.equal(parse('To-do: fika med Emma').kind,'task')});
+test('Prefixes work without whitespace after colon',()=>{assert.equal(parse('Anteckning:mina tankar').kind,'note');assert.equal(parse('Idé:en väderskärm').title,'en väderskärm')});
+test('Reminders, ideas, wishes and links',()=>{assert.equal(parse('Påminn mig att ringa mamma imorgon').kind,'reminder');assert.equal(parse('Idé: en ny app').kind,'idea');assert.equal(parse('Önskar mig en kamera').kind,'wishlist');assert.equal(parse('Läs senare https://example.com').kind,'bookmark')});
+test('Ambiguous text remains a capture',()=>{const x=parse('En blå dörr');assert.equal(x.kind,'capture');assert.ok(x.warnings.length)});
+test('Calendar entry without a date requests one',()=>{const x=parse('Lunch med Sara');assert.equal(x.due,'');assert.ok(x.warnings.some(w=>w.includes('Vilken dag')))});
+test('Date boundaries are based on local calendar dates',()=>{const x=interpretCapture('Middag imorgon kl 19',[],new Date(2026,11,31,23));assert.equal(x.due,'2027-01-01')});
+test('Overmorrow, offsets and next calendar week',()=>{assert.equal(parse('Ring pappa i övermorgon').due,'2026-10-09');assert.equal(parse('Ring pappa om 2 veckor').due,'2026-10-21');assert.equal(parse('Möte nästa fredag kl 14').due,'2026-10-16')});
+test('Named and numeric dates',()=>{assert.equal(parse('Möte 12 oktober 2026 kl 9.30').due,'2026-10-12');assert.equal(parse('Möte 12 oktober 2026 kl 9.30').time,'09:30');assert.equal(parse('Ring pappa 12/10').due,'2026-10-12');assert.equal(parse('Möte 2026-10-12 09:30').due,'2026-10-12')});
+test('Reject impossible dates and clocks',()=>{const x=parse('Möte 31/2 kl 25:80');assert.equal(x.due,'');assert.equal(x.time,'');assert.ok(x.warnings.length>=2)});
+test('Leap day rolls into next year only when valid',()=>{assert.equal(parse('Möte 2028-02-29 kl 15').due,'2028-02-29');assert.equal(parse('Möte 2027-02-29 kl 15').due,'')});
+test('Notes preserve multiline content, date expressions and links',()=>{const x=parse('Anteckning: Mina tankar\nImorgon vill jag fundera vidare.\n[[Helgidéer]]');assert.equal(x.title,'Mina tankar');assert.match(x.body,/\[\[Helgidéer\]\]/);assert.equal(x.due,'')});
+test('Tags, explicit life area, and priority',()=>{const x=parse('Fixa prototypen @Projekt #design viktigt');assert.equal(x.area,'Projekt');assert.equal(x.tags,'design');assert.equal(x.priority,'High');assert.ok(!x.title.includes('#design'));assert.match(x.body,/#design/)});

@@ -1,0 +1,6 @@
+# Kopiera till .dev.vars. Filen med riktiga värden är ignorerad av git.
+# Lägg aldrig Notion-nyckeln i klientkod eller chatten.
+NOTION_API_KEY=""
+NOTION_PARENT_PAGE_ID=""
+# Krävs på publicerad version: ägarens inloggade ChatGPT-mejl.
+NOTION_OWNER_EMAIL=""
