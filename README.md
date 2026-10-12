@@ -1,4 +1,4 @@
-﻿# Personal OS
+# OscarOS
 
 A private, local-first home screen for one person. Built with React, TypeScript, Tailwind, shadcn/ui, and the Next-compatible Vinext runtime.
 
@@ -28,7 +28,7 @@ Items share stable IDs and a type, title, details, tags, area, timestamps, and o
 
 ## Notion
 
-Under **Anteckningar** finns anslutning för Notion. Varje vanlig undersida under en vald samlingssida blir en anteckning i appen. Anteckningar kan skapas och ändras från båda apparna; synken körs medan Oscar OS är öppet. Integrationsnyckeln ligger på servern i `.dev.vars` lokalt, aldrig i webbläsaren. Se [Notion-inställningen](docs/notion.md).
+Under **Anteckningar** finns anslutning för Notion. Varje vanlig undersida under en vald samlingssida blir en anteckning i appen. Anteckningar kan skapas och ändras från båda apparna; synken körs medan OscarOS är öppet. Integrationsnyckeln ligger på servern i `.dev.vars` lokalt, aldrig i webbläsaren. Se [Notion-inställningen](docs/notion.md).
 
 ## Google Kalender
 
@@ -42,7 +42,7 @@ Tolkningen använder lokala regler för vanliga svenska formuleringar, inte en e
 
 ## Mulle – din appkompis
 
-Mulle är en chattkompis som kan svara på frågor om Personal OS och använda relevanta uppgifter, anteckningar, kalenderposter, mål, vanor, länkar och reflektioner för personliga svar. Chattmeddelanden och appdata i sammanhanget skickas till OpenAI. Mulle kan förbereda utkast till uppgifter, anteckningar, kalenderposter och påminnelser; de öppnas i appens redigeringsformulär och sparas först efter att du granskat dem. Chatten sparas lokalt i webbläsaren. Den valfria dagsanalysen kan föreslå uppgifter som du själv väljer om du vill lägga till. Se [Mulles integritet och inställning](docs/ai-coach.md) för detaljer om vilka data som skickas.
+Mulle är en chattkompis som kan svara på frågor om OscarOS och använda relevanta uppgifter, anteckningar, kalenderposter, mål, vanor, länkar och reflektioner för personliga svar. Chattmeddelanden och appdata i sammanhanget skickas till OpenAI. Mulle kan förbereda utkast till uppgifter, anteckningar, kalenderposter och påminnelser; de öppnas i appens redigeringsformulär och sparas först efter att du granskat dem. Chatten sparas lokalt i webbläsaren. Den valfria dagsanalysen kan föreslå uppgifter som du själv väljer om du vill lägga till. Se [Mulles integritet och inställning](docs/ai-coach.md) för detaljer om vilka data som skickas.
 
 Konfigurera `OPENAI_API_KEY` och `AI_OWNER_EMAIL` som serverhemligheter i `.dev.vars` lokalt och i publiceringsmiljön. `OPENAI_MODEL` är valfri och använder `gpt-4.1-mini` som standard. API-nyckeln lämnar aldrig servern. Ägarens e-post kontrolleras mot appens inloggningsidentitet på publicerad miljö. Se [Mulles integritet och inställning](docs/ai-coach.md).
 

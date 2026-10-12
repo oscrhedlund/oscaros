@@ -1,18 +1,10 @@
 import { env } from "cloudflare:workers";
 import { fetchBeszelSystemHistory, type BeszelHistoryRange } from "@/lib/beszel";
+import { requestHasAppSession } from "@/lib/app-auth";
 
 export const dynamic = "force-dynamic";
 
 const ranges = new Set<BeszelHistoryRange>(["1h", "6h", "24h", "7d"]);
-
-function authorized(request: Request, ownerEmail: string, selfHosted: boolean) {
-  const url = new URL(request.url);
-  const origin = request.headers.get("Origin");
-  if ((origin && origin !== url.origin) || request.headers.get("Sec-Fetch-Site") === "cross-site") return false;
-  if (import.meta.env.DEV && ["localhost", "127.0.0.1", "[::1]"].includes(url.hostname)) return true;
-  if (selfHosted && !ownerEmail) return Boolean(origin);
-  return Boolean(ownerEmail) && request.headers.get("oai-authenticated-user-email")?.toLowerCase() === ownerEmail.toLowerCase();
-}
 
 function reply(body: unknown, status = 200) {
   return Response.json(body, { status, headers: { "Cache-Control": "no-store" } });
@@ -20,8 +12,7 @@ function reply(body: unknown, status = 200) {
 
 export async function GET(request: Request) {
   const settings = env as unknown as Record<string, string | undefined>;
-  const ownerEmail = settings.SYSTEM_STATUS_OWNER_EMAIL || "";
-  if (!authorized(request, ownerEmail, settings.APP_SELF_HOSTED === "true")) {
+  if (!await requestHasAppSession(request)) {
     return reply({ error: "Systemhistorik kräver en tillåten inloggning och en begäran från appen." }, 403);
   }
   const url = new URL(request.url);

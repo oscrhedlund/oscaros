@@ -1,6 +1,6 @@
 # Notion-anteckningar
 
-1. Skapa en Notion-sida, exempelvis **Oscar OS – Anteckningar**. Vanliga undersidor blir anteckningar i appen.
+1. Skapa en Notion-sida, exempelvis **OscarOS – Anteckningar**. Vanliga undersidor blir anteckningar i appen.
 2. Skapa en intern integration på https://www.notion.so/profile/integrations. Välj rätt workspace och aktivera läsning, skapande och uppdatering av innehåll.
 3. Öppna den valda sidan i Notion. Under sidans meny väljer du **Connections / Anslutningar** och lägger till integrationen. Dela endast den samling du vill synka.
 4. Kopiera `.dev.vars.example` till `.dev.vars` i projektet. Fyll i `NOTION_API_KEY` med integrationsnyckeln och `NOTION_PARENT_PAGE_ID` med sidans länk eller ID. Nyckeln ska aldrig skickas i chatten.

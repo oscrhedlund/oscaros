@@ -13,6 +13,12 @@ if (!Number.isInteger(port) || port < 1 || port > 65535) {
 
 const runtimeVariables = [
   "APP_SELF_HOSTED",
+  "APP_URL",
+  "AUTH_ALLOWED_EMAIL",
+  "AUTH_SECRET",
+  "AUTH_PASSWORD",
+  "GOOGLE_OAUTH_CLIENT_ID",
+  "GOOGLE_OAUTH_CLIENT_SECRET",
   "AI_OWNER_EMAIL",
   "NOTION_OWNER_EMAIL",
   "OPENAI_API_KEY",
@@ -84,7 +90,7 @@ for (const signal of ["SIGINT", "SIGTERM"]) {
 
 child.on("error", (error) => {
   cleanup();
-  console.error("Could not start the Personal OS server.", error);
+  console.error("Could not start the OscarOS server.", error);
   process.exitCode = 1;
 });
 

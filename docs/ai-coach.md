@@ -1,6 +1,6 @@
 # Mulle – din appkompis
 
-Mulle är en svensk chattkompis och guide till Personal OS. Den kan förklara appens funktioner och använda en avgränsad ögonblicksbild av dina lokala appdata för att ge personliga svar. Chattmeddelanden och appdata som ingår i sammanhanget skickas via appservern till OpenAI; API-nyckeln stannar som serverhemlighet.
+Mulle är en svensk chattkompis och guide till OscarOS. Den kan förklara appens funktioner och använda en avgränsad ögonblicksbild av dina lokala appdata för att ge personliga svar. Chattmeddelanden och appdata som ingår i sammanhanget skickas via appservern till OpenAI; API-nyckeln stannar som serverhemlighet.
 
 Vid chatt kan underlaget innehålla uppgifter och deras beskrivningar, anteckningar, kalenderposter, livsområden, taggar, mål, vanor, länkar, fokuspass, reflektioner och inställningar för översiktskort. Högst 60 poster, 30 mål, 30 vanor, 50 länkar och de senaste 14 reflektionerna tas med. De senaste 12 chattmeddelandena skickas som konversationssammanhang. Inloggningsuppgifter och anslutningshemligheter för Google Kalender, Notion och Beszel ingår inte. Beszel-mätvärden hämtas inte in i chatten.
 

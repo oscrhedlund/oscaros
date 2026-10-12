@@ -7,7 +7,22 @@ Projektet kan distribueras som en Docker-applikation. Coolify bygger den med den
 1. Lägg projektet i ett privat Git-repo som Coolify kan läsa, eller anslut Coolify till den aktuella repokällan.
 2. Skapa en **Application** i Coolify från Git-källan och välj byggmetoden **Dockerfile**. Ange `Dockerfile` som sökväg och projektets rotkatalog som build context.
 3. Ange domän och slå på HTTPS/TLS i Coolify. Containerporten är `3000`; appen lyssnar på alla containergränssnitt.
-4. Lägg till följande miljövariabel:
+4. Lägg till inloggningsvariablerna. Google-inloggningen låser appen till ett enda Google-konto och sätter en signerad, `HttpOnly`-cookie som gäller i 30 dagar.
+
+   Skapa först en **OAuth client ID** av typen **Web application** i Google Cloud Console. Lägg till `https://DIN-DOMÄN/api/auth/google/callback` som *Authorized redirect URI*. Konfigurera OAuth consent screen och lägg till ägarens Google-konto som testanvändare om appen står i testläge. Kopiera klient-ID och klienthemlighet till Coolify.
+
+   | Namn | Värde | Krävs |
+   |---|---|---|
+   | `APP_URL` | Appens publika HTTPS-adress utan avslutande snedstreck, t.ex. `https://personal.example.com` | Ja |
+   | `AUTH_ALLOWED_EMAIL` | Exakt e-postadress för det enda Google-konto som får logga in | Ja |
+   | `AUTH_SECRET` | Slumpmässig hemlighet på minst 32 tecken; skapa t.ex. med `openssl rand -base64 48` eller PowerShell: `[Convert]::ToBase64String([Security.Cryptography.RandomNumberGenerator]::GetBytes(48))` | Ja |
+   | `GOOGLE_OAUTH_CLIENT_ID` | Google Cloud OAuth Web application client ID | Ja |
+   | `GOOGLE_OAUTH_CLIENT_SECRET` | Hemligheten till OAuth-klienten | Ja |
+   | `AUTH_PASSWORD` | Ett starkt tillfälligt lösenord på minst 12 tecken; använd som reserv tills Google OAuth är konfigurerat | Valfri |
+
+   Google redirect URI måste vara exakt `https://DIN-DOMÄN/api/auth/google/callback`. Använd HTTPS i Coolify; `Secure`-inloggningscookien skickas inte över vanlig HTTP. Använd OAuth-klienten endast för OscarOS-inloggningen. Kalenderns befintliga klient-ID är en separat inställning. Om OAuth-klienten inte är konfigurerad visas i stället ett e-post/lösenordsformulär med `AUTH_ALLOWED_EMAIL` och `AUTH_PASSWORD`. När Google OAuth är komplett används Google-inloggning och lösenordsinloggningen stängs automatiskt av.
+
+5. Lägg till övriga funktionsvariabler efter behov:
 
    | Namn | Värde | Krävs |
    |---|---|---|
@@ -21,9 +36,9 @@ Projektet kan distribueras som en Docker-applikation. Coolify bygger den med den
    | `BESZEL_PASSWORD` | Lösenord för Beszel-kontot | För Beszel-systemvyn |
    | `UPTIME_KUMA_STATUS_URL` | Publik länk, t.ex. `https://status.example.com/status/home` | Valfri reserv om Beszel inte är konfigurerat |
 
-   Markera lösenord och API-nycklar som hemliga i Coolify. Skapa gärna en separat Beszel-användare med läsbehörighet och dela endast de system som ska visas. Beszel-inloggningen skickas bara från appservern till Beszel och exponeras aldrig i webbläsaren. Använd inte `AI_OWNER_EMAIL` eller `NOTION_OWNER_EMAIL` i vanligt självhostat läge: Coolify skickar normalt inte appplattformens `oai-authenticated-user-email`-identitet. Lämna dessa variabler tomma/utelämnade. Appen accepterar då endast same-origin-begäranden, och servernycklarna stannar på serversidan.
+   Markera `AUTH_PASSWORD`, lösenord, API-nycklar, `AUTH_SECRET` och `GOOGLE_OAUTH_CLIENT_SECRET` som hemliga i Coolify. Skapa gärna en separat Beszel-användare med läsbehörighet och dela endast de system som ska visas. Beszel-inloggningen skickas bara från appservern till Beszel och exponeras aldrig i webbläsaren. `AI_OWNER_EMAIL` och `NOTION_OWNER_EMAIL` används inte för appinloggningen.
 
-5. Spara inställningarna och distribuera. Docker-containern kör som den obehöriga `node`-användaren och har en inbyggd hälsokontroll.
+6. Spara inställningarna och distribuera. Docker-containern kör som den obehöriga `node`-användaren och har en inbyggd hälsokontroll. Om Google OAuth är konfigurerat väljer du **Fortsätt med Google**; annars loggar du in med e-postadressen i `AUTH_ALLOWED_EMAIL` och det tillfälliga `AUTH_PASSWORD`. Andra Google-konton nekas även om de lyckas autentisera hos Google. **Logga ut** raderar sessionscookien från den aktuella enheten.
 
 System-dashboarden använder Beszel när `BESZEL_URL`, `BESZEL_EMAIL` och `BESZEL_PASSWORD` är konfigurerade. Den visar serverstatus, CPU, minne, disk, drifttid och containerstatus/-användning. Med **Anpassa kort** kan du välja vilka system och mätvärden som visas; valen sparas lokalt i webbläsaren. Klicka på ett systemkort för grafer över serverhistorik och, när containrar finns, containerhistorik. Historiken kan filtreras till 1 timme, 6 timmar, 24 timmar eller 7 dagar. Appservern måste kunna nå Beszel-hubben. HTTPS krävs för hubbadressen, förutom localhost i lokal utveckling. Om Beszel-variablerna inte anges kan `UPTIME_KUMA_STATUS_URL` fortfarande användas för tjänststatus och incidenter; den publika Kuma-statussidan visar inte CPU/RAM/disk.
 
@@ -31,9 +46,11 @@ För lokal utveckling kan `BESZEL_ALLOW_INSECURE_HTTP=true` användas tillsamman
 
 Om du ansluter Notion ska integrationen ha läs-, skapande- och redigeringsbehörighet till den valda sidan. För Google Kalender behöver klientens exakta HTTPS-ursprung läggas till bland OAuth-klientens tillåtna JavaScript-ursprung; OAuth-klient-ID:t anges sedan i appens kalenderinställning.
 
-## Skydda den personliga appen
+## Appinloggning och skydd
 
-Appen har ingen egen inloggningssida. `APP_SELF_HOSTED=true` ersätter inte användarautentisering; det gör det möjligt för den självhostade installationen att använda Notion och AI utan ChatGPT-identitetsheaders. Skydda därför **hela applikationen, inklusive `/api/*`**, med Coolifys/proxyns åtkomstskydd, exempelvis autentisering via en säker reverse-proxy eller identity provider. Använd HTTPS och exponera aldrig en oskyddad instans publikt. Origin-kontrollen på API:erna är CSRF-skydd, inte inloggning.
+Appen skyddar startsidan och privata API:er med Google OAuth-inloggning. Inloggningen använder Authorization Code + PKCE; ID-tokenens signatur verifieras mot Googles publika nycklar, och e-postadressen måste vara verifierad och matcha `AUTH_ALLOWED_EMAIL`. En serververifierad, signerad `HttpOnly`, `SameSite=Lax`-cookie håller dig inloggad i 30 dagar; utloggning raderar cookien. Innan Google OAuth är komplett kan du i stället ange `AUTH_PASSWORD` och logga in med `AUTH_ALLOWED_EMAIL` som e-postadress. När Google OAuth-konfigurationen blir komplett stängs lösenordsinloggningen av. I lokal utveckling aktiveras lösenordsinloggningen först när `AUTH_ALLOWED_EMAIL`, `AUTH_SECRET` och `AUTH_PASSWORD` har satts i `.dev.vars`; starta om dev-servern efter ändringen. Distribuerad inloggning kräver HTTPS. Låt `APP_SELF_HOSTED=true` vara satt för självhostade AI-/Notion-funktioner; det är inte längre den mekanism som skyddar åtkomsten.
+
+Använd fortfarande HTTPS i Coolify och exponera inte serverhemligheter. API:erna kontrollerar också ursprung för att motverka CSRF, men den kontrollen ersätter inte inloggningen. Lokal utveckling på localhost fortsätter att fungera utan Google OAuth.
 
 Coolify använder normalt samma serverhemligheter för alla som får åtkomst till installationen. När du använder Mulle skickas frågan, chattkontexten och relevanta appposter till OpenAI. Skydda därför appen med autentisering och läs [AI-integritetsdokumentationen](./ai-coach.md) innan du aktiverar `OPENAI_API_KEY`.
 

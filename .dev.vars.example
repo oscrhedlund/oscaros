@@ -1,8 +1,16 @@
 # Kopiera till .dev.vars. Filen med riktiga värden är ignorerad av git.
 # Lägg aldrig Notion-nyckeln i klientkod eller chatten.
+# Lokal utveckling på localhost kräver inte inloggning förrän AUTH_PASSWORD anges.
+# Om Google OAuth saknas visas ett tillfälligt formulär för e-postadress och lösenord.
+APP_URL=""
+AUTH_ALLOWED_EMAIL=""
+AUTH_SECRET=""
+AUTH_PASSWORD=""
+GOOGLE_OAUTH_CLIENT_ID=""
+GOOGLE_OAUTH_CLIENT_SECRET=""
 NOTION_API_KEY=""
 NOTION_PARENT_PAGE_ID=""
-# Krävs på publicerad version: ägarens inloggade ChatGPT-mejl.
+# Legacy ChatGPT deployment setting; not used for app sign-in.
 NOTION_OWNER_EMAIL=""
 
 # Mulle requires a server-side OpenAI key; never expose it to the browser.

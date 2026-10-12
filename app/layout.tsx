@@ -1,12 +1,13 @@
 ﻿import type { Metadata } from "next";
 import "./globals.css";
 import "./ai-coach.css";
+import "./login/login.css";
 import type { Viewport } from "next";
 
 export const metadata: Metadata = {
-  title: "Personal OS",
+  title: "OscarOS",
   manifest: "/manifest.webmanifest",
-  appleWebApp: { capable: true, title: "Personal OS", statusBarStyle: "default" },
+  appleWebApp: { capable: true, title: "OscarOS", statusBarStyle: "default" },
   description: "Din privata plats för uppgifter, tankar, vanor, mål och AI-stöd.",
   other: {
     "codex-preview": "development",
