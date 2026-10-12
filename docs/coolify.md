@@ -61,3 +61,7 @@ Uppgifter, anteckningar, mål, vanor och länkkort lagras lokalt i respektive we
 Serverhemligheter injiceras av Coolify vid containerstart i en tillfällig Wrangler-konfigurationsfil med begränsade filrättigheter. Startskriptet tar bort filen vid normal avstängning; den ignoreras av Git och Docker-build context. Wrangler skapar även lokal runtime-state i containern, men den innehåller inte appens personliga poster.
 
 För lokal start utan Docker används fortfarande `npm run dev` eller `npm run build` följt av `npm start`.
+
+### Felsökning: `EACCES` för `dist/server/.wrangler/tmp`
+
+Om loggen visar `permission denied, mkdir '/app/dist/server/.wrangler/tmp'` körs Wrangler som den obehöriga `node`-användaren men saknar en skrivbar temporärkatalog. Dockerfilen skapar och ägarsätter nu just den katalogen under image-bygget. Hämta den senaste versionen från Git och distribuera om; ingen Coolify-miljövariabel behöver ändras.
