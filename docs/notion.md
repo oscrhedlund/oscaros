@@ -6,7 +6,7 @@
 4. Kopiera `.dev.vars.example` till `.dev.vars` i projektet. Fyll i `NOTION_API_KEY` med integrationsnyckeln och `NOTION_PARENT_PAGE_ID` med sidans länk eller ID. Nyckeln ska aldrig skickas i chatten.
 5. Starta om liveförhandsvisningen och öppna **Anteckningar → Anslut Notion**.
 
-Nyckeln används på servern och skickas inte till webbläsaren. Vid publicering ska värdena läggas i serverns miljöinställningar. `NOTION_OWNER_EMAIL` måste då matcha appägarens autentiserade ChatGPT-konto; andra besökare nekas Notion-åtkomst.
+Nyckeln används på servern och skickas inte till webbläsaren. Vid publicering ska värdena läggas i serverns miljöinställningar. På ChatGPT-värdar ska `NOTION_OWNER_EMAIL` matcha appägarens autentiserade ChatGPT-konto. Vid Coolify-hostning med `APP_SELF_HOSTED=true` lämnas `NOTION_OWNER_EMAIL` tom och appen måste i stället skyddas med autentisering i Coolify eller en betrodd reverse proxy. Se [Coolify-hostning](./coolify.md).
 
 Appen hämtar vanliga undersidor till den valda sidan och uppdaterar dem medan den är öppen. Databaser, djupare undermappar och avancerade sidor med bilagor eller undersidor synkas inte som redigerbara textanteckningar. En anteckning med sådant innehåll öppnas i Notion för redigering. Radering i Notion gör att posten försvinner ur nästa synk; appen raderar inte Notion-poster.
 

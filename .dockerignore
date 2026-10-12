@@ -1,0 +1,15 @@
+.git
+.github
+.next
+.vinext
+.wrangler
+.sites-runtime
+node_modules
+dist
+coverage
+.npm-cache
+.dev.vars*
+.env*
+*.tsbuildinfo
+README.md
+docs

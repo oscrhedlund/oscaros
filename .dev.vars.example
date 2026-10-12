@@ -4,3 +4,18 @@ NOTION_API_KEY=""
 NOTION_PARENT_PAGE_ID=""
 # Krävs på publicerad version: ägarens inloggade ChatGPT-mejl.
 NOTION_OWNER_EMAIL=""
+
+# Mulle requires a server-side OpenAI key; never expose it to the browser.
+OPENAI_API_KEY=""
+OPENAI_MODEL="gpt-4.1-mini"
+AI_OWNER_EMAIL=""
+
+# Optional: Beszel hub URL and read-only account credentials.
+BESZEL_URL=""
+BESZEL_EMAIL=""
+BESZEL_PASSWORD=""
+# Local development only; sends Beszel credentials without encryption.
+BESZEL_ALLOW_INSECURE_HTTP="false"
+# Optional fallback when Beszel is not configured: public Uptime Kuma status page URL.
+UPTIME_KUMA_STATUS_URL=""
+SYSTEM_STATUS_OWNER_EMAIL=""

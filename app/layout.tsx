@@ -1,12 +1,13 @@
 ﻿import type { Metadata } from "next";
 import "./globals.css";
+import "./ai-coach.css";
 import type { Viewport } from "next";
 
 export const metadata: Metadata = {
   title: "Personal OS",
   manifest: "/manifest.webmanifest",
   appleWebApp: { capable: true, title: "Personal OS", statusBarStyle: "default" },
-  description: "Din privata plats för uppgifter, tankar, vanor och mål. Allt sparas lokalt.",
+  description: "Din privata plats för uppgifter, tankar, vanor, mål och AI-stöd.",
   other: {
     "codex-preview": "development",
   },
@@ -21,7 +22,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#eeebf4",
+  themeColor: "#0b0d15",
 };
 
 export default function RootLayout({
@@ -35,4 +36,3 @@ export default function RootLayout({
     </html>
   );
 }
-
