@@ -18,6 +18,7 @@ RUN chown node:node /app \
     && mkdir -p /app/.wrangler/state /app/.sites-runtime/wrangler/logs \
       /app/.sites-runtime/wrangler/dev-registry /app/.sites-runtime/wrangler/registry \
       /app/dist/server/.wrangler/tmp \
+    && chown node:node /app/dist/server \
     && chown -R node:node /app/.wrangler /app/.sites-runtime /app/dist/server/.wrangler
 
 USER node

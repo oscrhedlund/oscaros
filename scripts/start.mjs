@@ -32,7 +32,7 @@ const runtimeVariables = [
   "UPTIME_KUMA_STATUS_URL",
 ].filter((name) => process.env[name] !== undefined);
 
-const devVarsPath = path.join(projectRoot, ".dev.vars");
+const devVarsPath = path.join(projectRoot, "dist/server/.dev.vars");
 const generatedMarker = "# Generated at container startup; do not edit.";
 let generatedDevVars = false;
 if (existsSync(devVarsPath)) {

@@ -65,3 +65,7 @@ För lokal start utan Docker används fortfarande `npm run dev` eller `npm run b
 ### Felsökning: `EACCES` för `dist/server/.wrangler/tmp`
 
 Om loggen visar `permission denied, mkdir '/app/dist/server/.wrangler/tmp'` körs Wrangler som den obehöriga `node`-användaren men saknar en skrivbar temporärkatalog. Dockerfilen skapar och ägarsätter nu just den katalogen under image-bygget. Hämta den senaste versionen från Git och distribuera om; ingen Coolify-miljövariabel behöver ändras.
+
+### Felsökning: inloggningssidan säger att miljövariabler saknas
+
+Runtime-variablerna ska finnas i containern och läsas av startskriptet. Startskriptet skriver dem till `dist/server/.dev.vars`, bredvid Wrangler-konfigurationen som laddar dem. Om containern kör en äldre image kan variablerna finnas i Coolify men ändå saknas i appen. Hämta senaste `main` och distribuera om.
